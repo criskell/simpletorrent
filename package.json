@@ -1,5 +1,8 @@
 {
   "name": "@criskell/ntorrent",
   "version": "1.0.0",
-  "main": "src/cli.js"
+  "main": "src/cli.js",
+  "dependencies": {
+    "yargs": "^17.6.2"
+  }
 }
