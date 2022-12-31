@@ -1,11 +1,21 @@
 #!/usr/bin/node
+import yargs from "yargs";
+import fs from "node:fs/promises";
+import { hideBin } from "yargs/helpers";
 
-const yargs = require("yargs");
-const { hideBin } = require("yargs/helpers");
+import { parseTorrent } from "./torrent.js";
+import { download } from "./client.js";
+
+const main = async (argv) => {
+  const rawTorrent = await fs.readFile(argv.torrentFile);
+  const torrent = parseTorrent(rawTorrent);
+
+  await download(torrent);
+};
 
 const argv = yargs(hideBin(process.argv))
-  .command("$0 <file>", "Baixa arquivos torrent.", (yargs) => {
-    yargs.positional("file", {
+  .command("$0 <torrentFile>", "Baixa arquivos torrent.", (yargs) => {
+    yargs.positional("torrentFile", {
       type: "string",
       describe: "Caminho para o arquivo torrent."
     });
@@ -13,4 +23,4 @@ const argv = yargs(hideBin(process.argv))
   .help()
   .argv;
 
-console.log(argv);
+main(argv);

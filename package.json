@@ -1,8 +1,11 @@
 {
-  "name": "@criskell/ntorrent",
+  "name": "ntorrent",
   "version": "1.0.0",
   "main": "src/cli.js",
+  "type": "module",
   "dependencies": {
+    "bencode": "^3.0.0",
+    "bittorrent-tracker": "^10.0.1",
     "yargs": "^17.6.2"
   }
 }
