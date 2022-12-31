@@ -1,8 +1,10 @@
 import { announce as udpAnnounce } from "./udp.js";
+import { announce as httpAnnounce } from "./http.js";
 import { randomBytes } from "../crypto.js";
 
 const protocols = {
   "udp:": udpAnnounce,
+  "http:": httpAnnounce,
 };
 
 export const announce = async (options) => {

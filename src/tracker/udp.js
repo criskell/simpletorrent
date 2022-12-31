@@ -1,7 +1,9 @@
 import dgram from "node:dgram";
 
-import { ACTIONS, EVENTS } from "./enums.js";
+import { ACTIONS } from "./enums.js";
 import { randomBytes } from "../crypto.js";
+
+import { parseCompactPeerList } from "./compact-peer-list.js";
 
 export const announce = (announceOptions) => {
   return new Promise(async (resolve, reject) => {
@@ -149,26 +151,10 @@ const makeAnnounceRequest = (
 };
 
 const parseAnnounceResponse = (response) => {
-  const peers = [];
-
-  let cursor = 12;
-
-  while (cursor + 6 < response.length) {
-    const ip = response.slice(cursor, cursor + 4).join(".");
-    const port = response.readUInt16BE(cursor + 4);
-
-    cursor += 6;
-
-    peers.push([{
-      address: ip,
-      port,
-    }]);
-  }
-
   return {
     interval: response.readUInt32BE(0),
     leecherCount: response.readUInt32BE(4),
     seederCount: response.readUInt32BE(8),
-    peers,
+    peers: parseCompactPeerList(response.slice(12)),
   };
 };
