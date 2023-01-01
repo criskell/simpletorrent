@@ -5,14 +5,17 @@ import { EVENTS } from "./tracker/enums.js";
 export const download = async (torrent) => {
   const peerId = await generatePeerId();
 
-  const announceResponse = await announce({
-    url: torrent.announceUrls[0],
-    peerId,
-    infohash: torrent.infohash,
-    event: EVENTS.START,
-  });
+  // const announceResponse = await announce({
+  //   url: torrent.announceUrls[0],
+  //   peerId,
+  //   infohash: torrent.infohash,
+  //   event: EVENTS.START,
+  //   stats: {
+  //     left: torrent.size,
+  //   },
+  // });
 
-  console.log(JSON.stringify(announceResponse, null, 4));
+  console.log(torrent.size);
 };
 
 export const generatePeerId = async () => {

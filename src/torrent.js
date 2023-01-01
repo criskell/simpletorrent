@@ -8,9 +8,15 @@ export const parseTorrent = (raw) => {
     .update(bencode.encode(torrent.info))
     .digest();
 
-  torrent.announceUrls = [
-    new URL(torrent.announce.toString("utf8")),
-  ];
+  const announces = Array.isArray(torrent.announce)
+    ? torrent.announce
+    : [torrent.announce];
+
+  torrent.announceUrls = announces.map((announce) => new URL(announce.toString("utf8")));
+
+  torrent.size = torrent.info.files
+    ? torrent.info.files.map((file) => BigInt(file.length)).reduce((a, b) => a + b)
+    : BigInt(torrent.info.length);
 
   return torrent;
 };
