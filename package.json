@@ -4,7 +4,6 @@
   "main": "src/cli.js",
   "type": "module",
   "dependencies": {
-    "bencode": "^3.0.0",
     "yargs": "^17.6.2"
   }
 }
