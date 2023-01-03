@@ -1,8 +1,10 @@
 import crypto from "node:crypto";
 import bencode from "./bencode/encoding.js";
 
-export const parseTorrent = (raw) => {
-  const torrent = bencode.decode(raw);
+export const makeTorrentFrom = (raw) => {
+  const torrent = {};
+
+  const decodedTorrent = bencode.decode(raw);
 
   torrent.infohash = crypto.createHash("sha1")
     .update(bencode.encode(torrent.info))
