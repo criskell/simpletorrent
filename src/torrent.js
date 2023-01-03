@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import bencode from "bencode";
+import bencode from "./bencode/encoding.js";
 
 export const parseTorrent = (raw) => {
   const torrent = bencode.decode(raw);
