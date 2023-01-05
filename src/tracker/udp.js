@@ -1,76 +1,86 @@
 import dgram from "node:dgram";
 
-import { ACTIONS } from "./enums.js";
 import { randomBytes } from "../crypto.js";
-
 import { parseCompactPeerList } from "./compact-peer-list.js";
 
-export const announce = (announceOptions) => {
-  return new Promise(async (resolve, reject) => {
-    let currentTransactionId;
+class UDPTrackerClient {
+  constructor(makeUdpSocket, announceUrl) {
+    this._makeUdpSocket = makeUdpSocket;
+    this._announceUrl = announceUrl;
+  }
 
-    const socket = dgram.createSocket("udp4");
+  async announce(request) {
+    return new Promise(async (resolve, reject) => {
+      let currentTransactionId = await this._generateTransactionId();
 
-    const destination = {
-      address: announceOptions.url.hostname,
-      port: announceOptions.url.port,
-    };
+      const socket = this._makeUdpSocket("udp4");
 
-    const regenerateTransactionId = async () => {
-      currentTransactionId = (await randomBytes(4)).readUInt32BE(0);
+      const destination = {
+        address: this._announceUrl.hostname,
+        port: this._announceUrl.port,
+      };
 
-      return currentTransactionId;
-    };
+      const handleIncomingMessage = async (message) => {
+        const action = message.readUInt32BE(0);
+        const transactionId = message.readUInt32BE(4);
 
-    const sendMessage = (message) => {
-      return new Promise((resolve, reject) => {
-        socket.send(
-          message,
-          0,
-          message.length,
-          destination.port,
-          destination.address,
-          (err) => {
-            if (err) return reject(err);
+        if (transactionId !== currentTransactionId) {
+          throw new Error(`O tracker "${url}" enviou um ID de transação inválido.`);
+        }
 
-            resolve();
-          }
-        );
-      });
-    };
+        if (action === ACTIONS.CONNECT) {
+          const connectionId = message.slice(8);
 
-    const handleIncomingMessage = async (message) => {
-      const action = message.readUInt32BE(0);
-      const transactionId = message.readUInt32BE(4);
+          currentTransactionId = await this._generateTransactionId();
 
-      if (transactionId !== currentTransactionId) {
-        throw new Error(`O tracker "${url}" enviou um ID de transação inválido.`);
-      }
+          return sendMessage(
+            makeAnnounceRequest(
+              currentTransactionId,
+              connectionId,
+              announceOptions
+            )
+          );
+        }
 
-      if (action === ACTIONS.CONNECT) {
-        const connectionId = message.slice(8);
+        if (action === ACTIONS.ANNOUNCE) {
+          socket.close();
 
-        return sendMessage(
-          makeAnnounceRequest(
-            await regenerateTransactionId(),
-            connectionId,
-            announceOptions
-          )
-        );
-      }
+          return resolve(parseAnnounceResponse(message.slice(8)));
+        }
+      };
+      
+      socket.on("error", reject);
+      socket.on("message", handleIncomingMessage);
 
-      if (action === ACTIONS.ANNOUNCE) {
-        socket.close();
+      await sendMessage(makeConnectRequest(currentTransactionId));
+    });
+  }
 
-        return resolve(parseAnnounceResponse(message.slice(8)));
-      }
-    };
-    
-    socket.on("error", reject);
-    socket.on("message", handleIncomingMessage);
+  async _sendMessage (socket, message) {
+    return new Promise((resolve, reject) => {
+      socket.send(
+        message,
+        0,
+        message.length,
+        this._port,
+        this._address,
+        (err) => {
+          if (err) return reject(err);
 
-    await sendMessage(makeConnectRequest(await regenerateTransactionId()));
-  });
+          resolve();
+        }
+      );
+    });
+  }
+
+  async _generateTransactionId() {
+    return (await crypto.randomBytes(4)).readUInt32BE(0);
+  }
+}
+
+const ACTIONS = {
+  CONNECT: 0,
+  ANNOUNCE: 1,
 };
 
 const makeConnectRequest = (transactionId) => {
@@ -95,15 +105,14 @@ const makeAnnounceRequest = (
   {
     peerId,
     infohash,
-    event,
-    stats: {
-      left,
-      downloaded,
-      uploaded,
-    },
+    event = "empty",
+    left,
+    downloaded,
+    uploaded,
     key,
-    peerCount,
-    port
+    peerCount = -1,
+    port,
+    ip = 0,
   }
 ) => {
   const request = Buffer.alloc(98);
