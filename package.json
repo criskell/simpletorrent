@@ -1,5 +1,5 @@
 {
-  "name": "ntorrent",
+  "name": "@criskell/ntorrent",
   "version": "1.0.0",
   "main": "src/cli.js",
   "type": "module",
