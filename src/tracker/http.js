@@ -1,7 +1,7 @@
 import bencode from "../bencode/encoding";
 import { parseCompactPeerList } from "./compact-peer-list.js";
 
-class HTTPTrackerClient {
+class HttpTrackerClient {
   constructor(httpClient, announceUrl) {
     this._httpClient = httpClient;
     this._announceUrl = announceUrl;
@@ -39,12 +39,10 @@ class HTTPTrackerClient {
     uploaded,
     downloaded,
     left,
-    compact,
     event,
     ip,
     numwant,
     key,
-    trackerid,
   }) {
     return {
       info_hash: infohash,
@@ -53,12 +51,11 @@ class HTTPTrackerClient {
       uploaded,
       downloaded,
       left,
-      compact,
+      compact: 1,
       event,
       ip,
       numwant,
       key,
-      trackerid,
     };
   }
 }

@@ -3,7 +3,7 @@ import dgram from "node:dgram";
 import { randomBytes } from "../crypto.js";
 import { parseCompactPeerList } from "./compact-peer-list.js";
 
-class UDPTrackerClient {
+class UdpTrackerClient {
   constructor(makeUdpSocket, announceUrl) {
     this._makeUdpSocket = makeUdpSocket;
     this._announceUrl = announceUrl;
