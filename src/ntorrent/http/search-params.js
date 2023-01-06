@@ -1,4 +1,11 @@
-export const encodeComponent = (component) => {
+export const encodeSearchParams = (params) => {
+  const entries = Object.entries(params)
+    .map(([key, value]) => `${encodeComponent(key)}=${encodeComponent(value)}`);
+
+  return entries.length ? "?" + entries : "";
+};
+
+const encodeComponent = (component) => {
   const str = Buffer.isBuffer(component)
     ? component.toString("binary")
     : component.toString();
