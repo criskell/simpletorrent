@@ -1,0 +1,22 @@
+{
+  "name": "@criskell/ntorrent-cli",
+  "version": "1.0.0",
+  "description": "",
+  "bin": "./bin/cli.js",
+  "type": "module",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/criskell/ntorrent.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/criskell/ntorrent/issues"
+  },
+  "homepage": "https://github.com/criskell/ntorrent#readme"
+}

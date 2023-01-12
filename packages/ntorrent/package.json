@@ -1,0 +1,24 @@
+{
+  "name": "@criskell/ntorrent",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0"
+  },
+  "scripts": {
+    "test": "mocha './**/*.test.js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/criskell/ntorrent.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/criskell/ntorrent/issues"
+  },
+  "homepage": "https://github.com/criskell/ntorrent#readme"
+}

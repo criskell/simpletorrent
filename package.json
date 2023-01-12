@@ -1,16 +1,6 @@
 {
-  "name": "@criskell/ntorrent",
-  "version": "1.0.0",
-  "bin": "bin/ntorrent-cli.js",
-  "type": "module",
-  "dependencies": {
-    "yargs": "^17.6.2"
-  },
-  "devDependencies": {
-    "chai": "^4.3.7",
-    "mocha": "^10.2.0"
-  },
-  "scripts": {
-    "test": "mocha"
-  }
+  "private": true,
+  "workspaces": [
+    "./packages/*"
+  ]
 }
