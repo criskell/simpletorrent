@@ -5,18 +5,20 @@ export class EncodeError extends Error {
   }
 }
 
-export const encode = (value) => {
+export const encode = (value) => {  
+  // Inteiros
+  if (typeof value === "number" || value === "bigint") return encodeInteger(value);
+ 
   // Bytestrings
   if (Buffer.isBuffer(value) || typeof value === "string") return encodeBytestring(value);
 
-  // Listas
+  // Mapas
+  if (value instanceof Map) return encodeDict(Array.from(value));
+
+  // Iteráveis
   if (typeof value[Symbol.iterator] === "function") return encodeList(value);
-  
-  // Inteiros
-  if (typeof value === "number" || value === "bigint") return encodeInteger(value);
-  
-  // Dicionários
-  if (value instanceof Map) return encodeDict(value.entries());
+
+  // Objetos
   if (typeof value === "object") return encodeDict(Object.entries(value));
 
   throw new EncodeError(`Não é possível codificar valores do tipo ${typeof value}`);
