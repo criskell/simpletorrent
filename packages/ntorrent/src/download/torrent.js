@@ -1,6 +1,12 @@
+import crypto from "crypto";
+
 import bencode from "../bencode/encoding.js";
 
-class Torrent {
+export class Torrent {
+  static fromBuffer(buffer) {
+    return new Torrent(bencode.decode(buffer));
+  }
+
   constructor(metainfo) {
     this._metainfo = metainfo;
 
@@ -9,8 +15,8 @@ class Torrent {
       .digest();
 
     const rawAnnounceUrls = Array.isArray(metainfo.announce)
-      ? torrent.announce
-      : [torrent.announce];
+      ? metainfo.announce
+      : [metainfo.announce];
 
     this.announceUrls = rawAnnounceUrls.map((announce) => new URL(announce.toString("utf8")));
 
